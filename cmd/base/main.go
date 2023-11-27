@@ -14,6 +14,7 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
+	"sync"
 )
 
 var configPath string = ""
@@ -47,10 +48,11 @@ func main() {
 	//	log.Fatalf("failed to init db: %s\n", err.Error())
 	//}
 
+	cache := &sync.Map{}
 	//nats
-	go brocker.NatsCycle()
+	go brocker.NatsCycle(cache)
 
-	handlers := handler.NewHandler(postgres, fmt.Sprintf("%s:%s", cfg.Host, cfg.Port))
+	handlers := handler.NewHandler(postgres, fmt.Sprintf("%s:%s", cfg.Host, cfg.Port), cache)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", cfg.Port),
 		Handler: handlers.Router(),

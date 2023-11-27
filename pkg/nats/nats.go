@@ -1,10 +1,12 @@
 package brocker
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/AtaullinShamil/L0/pkg/db"
 	"github.com/nats-io/nats.go"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -23,38 +25,7 @@ func NewNats(natsURL string) (*nats.Conn, error) {
 	return nc, nil
 }
 
-//func NatsCycle() {
-//	nc, err := NewNats(nats.DefaultURL)
-//	if err != nil {
-//		log.Fatalf("failed to connect nats: %s\n", err.Error())
-//	}
-//	defer nc.Close()
-//
-//	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	defer ec.Close()
-//
-//	wg := sync.WaitGroup{}
-//	wg.Add(1)
-//
-//	// Subscribe
-//	// Decoding errors will be passed to the function supplied via
-//	// nats.ErrorHandler above, and the callback supplied here will
-//	// not be invoked.
-//	if _, err := ec.Subscribe("updates", func(s *db.Order) {
-//		fmt.Println(s)
-//		wg.Done()
-//	}); err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	// Wait for a message to come in
-//	wg.Wait()
-//}
-
-func NatsCycle() {
+func NatsCycle(cache *sync.Map) {
 	nc, err := NewNats(nats.DefaultURL)
 	if err != nil {
 		log.Fatalf("failed to connect nats: %s\n", err.Error())
@@ -73,6 +44,11 @@ func NatsCycle() {
 	// not be invoked.
 	_, err = ec.Subscribe("updates", func(s *db.Order) {
 		fmt.Println(s)
+		jsonData, err := json.Marshal(s)
+		if err != nil {
+			return
+		}
+		cache.Store(s.OrderUID, jsonData)
 	})
 	if err != nil {
 		log.Fatal(err)
