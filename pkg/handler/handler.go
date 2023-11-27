@@ -29,7 +29,8 @@ func NewHandler(db *db.Database, url string, cache *sync.Map) *Handler {
 func (h *Handler) Router() chi.Router {
 	router := chi.NewRouter()
 
-	router.Get("/wb/check", h.GetInfo)
+	router.Post("/check", h.GetInfo)
+	router.Get("/wb", h.GetHTML)
 
 	return router
 }

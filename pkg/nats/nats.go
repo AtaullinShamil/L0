@@ -2,7 +2,6 @@ package brocker
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/AtaullinShamil/L0/pkg/db"
 	"github.com/nats-io/nats.go"
 	"log"
@@ -43,7 +42,6 @@ func NatsCycle(cache *sync.Map) {
 	// nats.ErrorHandler above, and the callback supplied here will
 	// not be invoked.
 	_, err = ec.Subscribe("updates", func(s *db.Order) {
-		fmt.Println(s)
 		jsonData, err := json.Marshal(s)
 		if err != nil {
 			return

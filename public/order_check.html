@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Check</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<form id="orderForm">
+    <label for="orderNumber">Order Number:</label><br>
+    <input type="text" id="orderNumber" name="orderNumber"><br>
+    <input type="button" value="Check Order" onclick="checkOrder()">
+</form>
+<div id="response"></div>
+
+<script>
+    function checkOrder() {
+        var orderNumber = document.getElementById("orderNumber").value;
+        var requestData = {
+            "uid": orderNumber
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/check",
+            data: JSON.stringify(requestData),
+            success: function(response){
+                document.getElementById("response").innerHTML = JSON.stringify(response);
+            },
+            error: function(error){
+                document.getElementById("response").innerHTML = JSON.stringify(error);
+            },
+            dataType: "json",
+            contentType : "application/json"
+        });
+    }
+</script>
+
+</body>
+</html>
