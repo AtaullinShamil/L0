@@ -6,7 +6,7 @@ docker :
 
 clean_docker:
 	docker stop WildBerries && docker rm WildBerries
-	docker stop NutsStreaming && docker rm NutsStreaming
+	docker stop NatsStreaming && docker rm NatsStreaming
 
 
 test :

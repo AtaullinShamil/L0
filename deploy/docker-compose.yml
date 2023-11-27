@@ -12,7 +12,7 @@ services:
       - "5432:5432"
   nats:
     image: nats:latest
-    container_name: NutsStreaming
+    container_name: NatsStreaming
     ports:
       - "4222:4222"
     stdin_open: true

@@ -38,5 +38,4 @@ func main() {
 	if err := ec.Publish("updates", &test); err != nil {
 		log.Fatal(err)
 	}
-
 }

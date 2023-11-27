@@ -3,6 +3,14 @@ module github.com/AtaullinShamil/L0
 go 1.20
 
 require (
+	github.com/go-chi/chi v1.5.5
+	github.com/heetch/confita v0.10.0
+	github.com/lib/pq v1.10.9
+	github.com/nats-io/nats.go v1.31.0
+	github.com/yuin/goldmark v1.4.13
+)
+
+require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/fatih/color v1.16.0 // indirect
@@ -13,16 +21,13 @@ require (
 	github.com/hashicorp/go-msgpack/v2 v2.1.1 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/raft v1.6.0 // indirect
-	github.com/heetch/confita v0.10.0 // indirect
 	github.com/klauspost/compress v1.17.3 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/nats-io/jwt/v2 v2.5.3 // indirect
 	github.com/nats-io/nats-server/v2 v2.9.24 // indirect
 	github.com/nats-io/nats-streaming-server v0.25.6 // indirect
-	github.com/nats-io/nats.go v1.31.0 // indirect
 	github.com/nats-io/nkeys v0.4.6 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nats-io/stan.go v0.10.4 // indirect

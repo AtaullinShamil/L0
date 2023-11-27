@@ -1,3 +1,5 @@
+host: localhost
+port: 8080
 postgres:
   port: 5432
   host: "localhost"
