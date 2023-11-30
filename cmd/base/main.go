@@ -26,6 +26,7 @@ func init() {
 
 func main() {
 	ctx := context.Background()
+	cache := &sync.Map{}
 
 	var cfg config.Config
 	err := confita.NewLoader(
@@ -42,15 +43,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect postgresql: %s\n", err.Error())
 	}
-	//
-	//err = postgres.Init(ctx)
-	//if err != nil {
-	//	log.Fatalf("failed to init db: %s\n", err.Error())
-	//}
 
-	cache := &sync.Map{}
+	if postgres.CheckTable("Orders") {
+		brocker.Recovery(postgres, cache)
+	} else {
+		err = postgres.Init(ctx)
+		if err != nil {
+			log.Fatalf("failed to init db: %s\n", err.Error())
+		}
+	}
+
 	//nats
-	go brocker.NatsCycle(cache)
+	go brocker.NatsCycle(ctx, postgres, cache)
 
 	handlers := handler.NewHandler(postgres, fmt.Sprintf("%s:%s", cfg.Host, cfg.Port), cache)
 	srv := &http.Server{

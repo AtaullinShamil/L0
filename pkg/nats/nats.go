@@ -1,6 +1,7 @@
 package brocker
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/AtaullinShamil/L0/pkg/db"
 	"github.com/nats-io/nats.go"
@@ -24,7 +25,7 @@ func NewNats(natsURL string) (*nats.Conn, error) {
 	return nc, nil
 }
 
-func NatsCycle(cache *sync.Map) {
+func NatsCycle(ctx context.Context, postgres *db.Database, cache *sync.Map) {
 	nc, err := NewNats(nats.DefaultURL)
 	if err != nil {
 		log.Fatalf("failed to connect nats: %s\n", err.Error())
@@ -42,6 +43,26 @@ func NatsCycle(cache *sync.Map) {
 	// nats.ErrorHandler above, and the callback supplied here will
 	// not be invoked.
 	_, err = ec.Subscribe("updates", func(s *db.Order) {
+		err := postgres.SaveOrder(ctx, s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = postgres.SaveDelivery(ctx, s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = postgres.SavePayment(ctx, s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = postgres.SaveItems(ctx, s)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		jsonData, err := json.Marshal(s)
 		if err != nil {
 			return
