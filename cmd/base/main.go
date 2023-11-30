@@ -17,20 +17,19 @@ import (
 	"sync"
 )
 
-var configPath string = ""
+var Path string = ""
 
 func init() {
-	flag.StringVar(&configPath, "config", "/Users/shamil/Desktop/L0/deploy", "config folder")
+	flag.StringVar(&Path, "config", "/Users/shamil/Desktop/L0", "config folder")
 	flag.Parse()
 }
 
 func main() {
 	ctx := context.Background()
-	cache := &sync.Map{}
 
 	var cfg config.Config
 	err := confita.NewLoader(
-		file.NewBackend(fmt.Sprintf("%s/default.yaml", configPath)),
+		file.NewBackend(fmt.Sprintf("%s/deploy/default.yaml", Path)),
 		env.NewBackend(),
 	).Load(ctx, &cfg)
 	if err != nil {
@@ -38,14 +37,19 @@ func main() {
 		return
 	}
 
+	cache := &sync.Map{}
 	//db
 	postgres, err := db.NewDatabase(cfg.Postgres)
 	if err != nil {
 		log.Fatalf("failed to connect postgresql: %s\n", err.Error())
 	}
 
-	if postgres.CheckTable("Orders") {
-		brocker.Recovery(postgres, cache)
+	//if there are tables, then the data is stored in the cache, if not, tables are created
+	if postgres.CheckTable(ctx, "Orders") {
+		err := brocker.Recovery(postgres, cache)
+		if err != nil {
+			log.Fatalf("failed to recovery: %s\n", err.Error())
+		}
 	} else {
 		err = postgres.Init(ctx)
 		if err != nil {
@@ -56,7 +60,8 @@ func main() {
 	//nats
 	go brocker.NatsCycle(ctx, postgres, cache)
 
-	handlers := handler.NewHandler(postgres, fmt.Sprintf("%s:%s", cfg.Host, cfg.Port), cache)
+	//web
+	handlers := handler.NewHandler(postgres, fmt.Sprintf("%s:%s", cfg.Host, cfg.Port), cache, Path)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", cfg.Port),
 		Handler: handlers.Router(),

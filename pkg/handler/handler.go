@@ -14,15 +14,16 @@ type Handler struct {
 	db       *db.Database
 	renderer renderer.Renderer
 	cache    *sync.Map
-
-	url string
+	path     string
+	url      string
 }
 
-func NewHandler(db *db.Database, url string, cache *sync.Map) *Handler {
+func NewHandler(db *db.Database, url string, cache *sync.Map, path string) *Handler {
 	return &Handler{
 		db:    db,
 		url:   fmt.Sprintf("%s/api/v1", url),
 		cache: cache,
+		path:  path,
 	}
 }
 

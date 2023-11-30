@@ -2,16 +2,17 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 )
 
 func (h *Handler) GetHTML(w http.ResponseWriter, r *http.Request) {
-	htmlFile, err := os.Open("/Users/shamil/Desktop/L0/public/order_check.html")
+	htmlFile, err := os.Open(h.path + "/public/order_check.html")
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	defer htmlFile.Close()
 

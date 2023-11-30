@@ -38,36 +38,32 @@ func NatsCycle(ctx context.Context, postgres *db.Database, cache *sync.Map) {
 	}
 	defer ec.Close()
 
-	// Subscribe
-	// Decoding errors will be passed to the function supplied via
-	// nats.ErrorHandler above, and the callback supplied here will
-	// not be invoked.
-	_, err = ec.Subscribe("updates", func(s *db.Order) {
-		err := postgres.SaveOrder(ctx, s)
+	_, err = ec.Subscribe("updates", func(order *db.Order) {
+		err := postgres.SaveOrder(ctx, order)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = postgres.SaveDelivery(ctx, s)
+		err = postgres.SaveDelivery(ctx, order)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = postgres.SavePayment(ctx, s)
+		err = postgres.SavePayment(ctx, order)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = postgres.SaveItems(ctx, s)
+		err = postgres.SaveItems(ctx, order)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		jsonData, err := json.Marshal(s)
+		jsonData, err := json.Marshal(order)
 		if err != nil {
-			return
+			log.Fatal(err)
 		}
-		cache.Store(s.OrderUID, jsonData)
+		cache.Store(order.OrderUID, jsonData)
 	})
 	if err != nil {
 		log.Fatal(err)
