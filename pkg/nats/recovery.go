@@ -2,7 +2,6 @@ package brocker
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/AtaullinShamil/L0/pkg/db"
 	"sync"
 )
@@ -14,9 +13,7 @@ func Recovery(postgres *db.Database, cache *sync.Map) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(orders[0])
 
-	fmt.Println(OrderToSimpleOrder(orders[0]))
 	for _, order := range orders {
 		jsonData, err := json.Marshal(OrderToSimpleOrder(order))
 		if err != nil {
