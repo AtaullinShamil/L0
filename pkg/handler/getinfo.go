@@ -19,7 +19,7 @@ func (h *Handler) GetInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var s db.Order
+	var s db.SimpleOrder
 	err = json.Unmarshal(jsonData.([]byte), &s)
 	if err != nil {
 		http.Error(w, "Error decoding JSON", http.StatusInternalServerError)

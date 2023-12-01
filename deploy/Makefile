@@ -8,7 +8,5 @@ clean_docker:
 	docker stop WildBerries && docker rm WildBerries
 	docker stop NatsStreaming && docker rm NatsStreaming
 
-
-test :
-		go run ../cmd/base/main.go &
+generator :
 		go run ../cmd/generator/main.go
