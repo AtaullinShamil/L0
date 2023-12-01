@@ -11,8 +11,10 @@ import (
 	"time"
 )
 
+const Path = "/Users/shamil/Desktop/L0"
+
 func main() {
-	file, err := os.Open("/Users/shamil/Desktop/L0/model.json")
+	file, err := os.Open(Path + "/model.json")
 	if err != nil {
 		log.Fatal(err)
 	}
