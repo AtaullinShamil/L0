@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    container_name: WildBerries
+    restart: always
+    environment:
+      POSTGRES_USER: wb
+      POSTGRES_PASSWORD: wb
+      POSTGRES_DB: wb
+    ports:
+      - "5432:5432"
+  nats:
+    image: nats:latest
+    container_name: NatsStreaming
+    ports:
+      - "4222:4222"
+    stdin_open: true
+    tty: true
